@@ -53,7 +53,7 @@ struct AesCipherParams {
 // Helper function to create cipher params from password
 // ============================================================================
 
-AesCipherParams CreateChiperParamsFromPassword(std::string_view password) {
+AesCipherParams CreateCipherParamsFromPassword(std::string_view password) {
     AesCipherParams params;
     constexpr std::array<unsigned char, 8> salt = {'1', '2', '3', '4', '5', '6', '7', '8'};
 
@@ -115,7 +115,7 @@ void CryptoGuardCtx::Impl::EncryptFile(std::iostream &inStream, std::iostream &o
     }
 
     // Create cipher parameters from password
-    AesCipherParams params = CreateChiperParamsFromPassword(password);
+    AesCipherParams params = CreateCipherParamsFromPassword(password);
     params.encrypt = 1;  // 1 for encryption
 
     // Create EVP context with custom deleter using std::unique_ptr
@@ -138,7 +138,7 @@ void CryptoGuardCtx::Impl::EncryptFile(std::iostream &inStream, std::iostream &o
     }
 
     // Buffers for input/output data
-    constexpr size_t BUFFER_SIZE = 1024;
+    constexpr size_t BUFFER_SIZE = 1024 * 64;
     std::vector<unsigned char> inBuf(BUFFER_SIZE);
     std::vector<unsigned char> outBuf(BUFFER_SIZE + EVP_MAX_BLOCK_LENGTH);
     int outLen;
@@ -200,7 +200,7 @@ void CryptoGuardCtx::Impl::DecryptFile(std::iostream &inStream, std::iostream &o
     }
 
     // Create cipher parameters from password
-    AesCipherParams params = CreateChiperParamsFromPassword(password);
+    AesCipherParams params = CreateCipherParamsFromPassword(password);
     params.encrypt = 0;  // 0 for decryption
 
     // Create EVP context with custom deleter
@@ -222,7 +222,7 @@ void CryptoGuardCtx::Impl::DecryptFile(std::iostream &inStream, std::iostream &o
     }
 
     // Buffers for input/output data
-    constexpr size_t BUFFER_SIZE = 1024;
+    constexpr size_t BUFFER_SIZE = 1024 * 64;
     std::vector<unsigned char> inBuf(BUFFER_SIZE);
     std::vector<unsigned char> outBuf(BUFFER_SIZE + EVP_MAX_BLOCK_LENGTH);
     int outLen;
@@ -299,7 +299,7 @@ std::string CryptoGuardCtx::Impl::CalculateChecksum(std::iostream &inStream) {
     }
 
     // Buffer for reading input data
-    constexpr size_t BUFFER_SIZE = 1024;
+    constexpr size_t BUFFER_SIZE = 1024 * 64;
     std::vector<unsigned char> buffer(BUFFER_SIZE);
 
     // Process input stream in chunks
