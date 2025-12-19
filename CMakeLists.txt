@@ -15,6 +15,8 @@ find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(GTest REQUIRED)
 
+include(GoogleTest)
+
 # Рекурсивно ищем все используемые .cpp и .h файлы, кроме main.cpp
 file(GLOB SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 file(GLOB HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.h")
@@ -52,4 +54,6 @@ target_link_libraries(unit_tests
 
 # Включаем тестирование
 enable_testing()
-add_test(NAME Tests COMMAND unit_tests)
+
+# Регистрируем тесты
+gtest_discover_tests(unit_tests)
